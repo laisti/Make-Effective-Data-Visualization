@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+		<style>
+			h2 {
+				text-align: center;
+			}
+			p {
+				width: 1125px;
+				margin-left: 75px;
+			}
+		</style>
+		<script type="text/javascript">
+			function draw(data) {
+			/* Create a bubble and line plots to visualize 
+			the difference in the players performance:
+			add interactive legend for viewer
+			*/
+				"use strict";
+				var margin = 100,
+					width = 1300 - margin,
+					height = 700 - margin;
+
+				// Add title for graph
+				d3.select('body')
+					.append('h2')
+					.text('Differences among the performance of the baseball \
+						players by Height, Handedness and Home Runs');
+
+				// Add a description of a project
+				d3.select('body')
+					.append('p')
+					.text('A data set containing 1,157 baseball players \
+						including their handedness (right or left handed), \
+						height (in inches), weight (in pounds), batting \
+						average, and home runs. Here I visualize some \
+						parameters that affects the performance of the \
+						baseball players. There are 2 plots on the page: first \
+						is the differences among the performance of the \
+						baseball players by Height and Home Runs, second - \
+						differences among the performance of the baseball \
+						players by Height, Handedness and Home Runs.');
+				d3.select('body')
+					.append('p')
+					.text('Warning: for better visualization and effects it is \
+						recommnded to use Chrome or Safari latest versions.');
+
+				// Create line and bubble plots to show the differences among 
+				// the performance of the baseball players by Height and Total 
+				// Home Runs
+				var svg = dimple.newSvg('body', width, height);
+				var chart = new dimple.chart(svg, data);
+
+				// Add centered title
+				svg.append('text')
+					.attr('x', chart._xPixels() + chart._widthPixels() / 2)
+					.attr('y', chart._yPixels() - 20)
+					.style('text-anchor', 'middle')
+					.style('font-family', 'sans-serif')
+					.style('font-weight', 'bold')
+					.style('font-size', '14')
+					.text('Differences among the performance of the \
+						baseball players by Height and Total Home Runs');
+
+				var chart_x = chart.addCategoryAxis('x', 'height');
+				chart_x.title = 'Height of a player (inches)';
+				chart_x.fontSize = 'auto';
+
+				var chart_y = chart.addMeasureAxis('y', 'avg');
+				chart_y.title = 'Batting average of a player';
+				chart_y.showGridlines = false;
+		 		chart_y.tickFormat = '.3f';
+				chart_y.fontSize = 'auto';
+
+				var chart_z = chart.addMeasureAxis('z', 'HR');
+
+				var bubble = chart.addSeries('Home runs', dimple.plot.bubble);
+				bubble.aggregate = dimple.aggregateMethod.avg;
+				var line = chart.addSeries('Batting average', dimple.plot.line);
+				line.aggregate = dimple.aggregateMethod.avg;
+
+				// Add a legend to graph
+				var myLegend = chart.addLegend(115, 250, 1100, 20, 'right');
+
+				// Draw graph
+				chart.draw();
+
+				// Change labels on pop-up when hover a bubble
+				bubble.getTooltipText = function (e) {
+					return ['Height of a player: ' + e.cx,
+						'Batting Average of a player: ' + e.cy,
+						'Total Home Runs: ' + e.cz];
+				};
+
+				// Change labels on pop-up when hover a line
+				line.getTooltipText = function (e) {
+						return ['Height of a player: ' + e.cx,
+							'Batting Average of a player: ' + e.cy];
+				};
+
+				// Change the place of labels in the legend
+				d3.select('.dimple-legend.dimple-legend-text.dimple-batting-average')
+					.attr('x', 1108.34375)
+					.attr('y', 256.969696969697)
+					.attr('font-size', '11px');
+				d3.select('.dimple-legend.dimple-legend-key.dimple-batting-average')
+					.attr('x', 1088.34375)
+					.attr('y', 250);
+				d3.select('.dimple-legend.dimple-legend-text.dimple-home-runs')
+					.attr('x', 1108.34375)
+					.attr('y', 281.969696969697)
+					.attr('font-size', '11px');
+				d3.select('.dimple-legend.dimple-legend-key.dimple-home-runs')
+					.attr('x', 1088.34375)
+					.attr('y', 275);
+
+				// Add a description for the plot
+				d3.select('body')
+					.append('p')
+					.text('Size of bubbles represents total number of Home \
+						Runs. On this graph you can notice that smaller players \
+						are better batting and medium players are more constant \
+						in their home run rates.');
+
+				// Create line and bubble plots to show the differences among 
+				// the performance of the baseball players by Height, Handedness
+				// and Total Home Runs
+				var svg = dimple.newSvg('body', width, height);
+				var chart = new dimple.chart(svg, data);
+				chart.defaultColors = [
+					new dimple.color('#99d8c9'),
+					new dimple.color('#a1d99b'),
+					new dimple.color('#2ca25f')];
+
+				// Add centered title
+				svg.append('text')
+					.attr('x', chart._xPixels() + chart._widthPixels() / 2)
+					.attr('y', chart._yPixels() - 20)
+					.style('text-anchor', 'middle')
+					.style('font-family', 'sans-serif')
+					.style('font-weight', 'bold')
+					.style('font-size', '14')
+					.text('Differences among the performance of the \
+						baseball players by Height, Handedness and Home \
+						Runs');
+
+				var chart_x = chart.addCategoryAxis('x', ['height', 'handedness']);
+				chart_x.title = 'Height of a player (inches)';
+				chart_x.fontSize = 'auto';
+
+				var chart_y = chart.addMeasureAxis('y', 'avg');
+				chart_y.title = 'Batting average of a player';
+				chart_y.showGridlines = false;
+				chart_y.tickFormat = '.3f';
+				chart_y.fontSize = 'auto';
+
+				var chart_z = chart.addMeasureAxis('z', 'HR');
+
+				var bubble = chart.addSeries('handedness',  dimple.plot.bubble);
+				bubble.aggregate = dimple.aggregateMethod.avg;
+				bubble.addOrderRule(['R','L','B'], false);
+
+				var line = chart.addSeries('handedness',  dimple.plot.line);
+				line.aggregate = dimple.aggregateMethod.avg;
+				line.addOrderRule(['R','L','B'], false);
+				line.lineWeight = 1;
+
+				// Add the legend title. I put it into a d3 data
+				// object to split it onto 2 lines.
+				svg.selectAll('title_text')
+					.data(['Click legend to','show/hide handedness:'])
+					.enter()
+					.append('text')
+						.attr('x', 1085)
+						.attr('y', function (d, i) { return 215 + i * 14; })
+						.style('font-family', 'sans-serif')
+						.style('font-size', '11px')
+						.style('color', 'Black')
+						.text(function (d) { return d; });
+
+				// Add a legend to graph
+				var myLegend = chart.addLegend(115, 250, 1100, 20, 'right');
+
+				// Draw graph
+				chart.draw();
+
+				// Change labels on pop-up when hover a bubble
+				bubble.getTooltipText = function(e) {
+					return ['Height of a player: ' + e.cx, 
+							'Batting Average of a player: ' + e.cy, 
+							'Total Home Runs: ' + e.cz];
+				};
+
+				// Change labels on pop-up when hover a line
+				line.getTooltipText = function(e) {
+					return ['Height of a player: ' + e.cx, 
+							'Batting Average of a player: ' + e.cy];
+				};
+
+				// Change the labels name in the legend
+				d3.select('.dimple-legend-text.dimple-b')
+					.text('Both-handed')
+					.attr('font-size', '11px');
+				d3.select('.dimple-legend-text.dimple-l')
+					.text('Left-handed')
+					.attr('x', 1108.34375)
+					.attr('y', 281.969696969697)
+					.attr('font-size', '11px');
+				d3.select('.dimple-legend-key.dimple-l')
+					.attr('x', 1088.34375)
+					.attr('y', 275);
+				d3.select('.dimple-legend-text.dimple-r')
+					.text('Right-handed')
+					.attr('x', 1108.34375)
+					.attr('y', 306.969696969697)
+					.attr('font-size', '11px');;
+				d3.select('.dimple-legend-key.dimple-r')
+					.attr('x', 1088.34375)
+					.attr('y', 300);
+
+				// Add a description to the plot
+				d3.select('body')
+					.append('p')
+					.text('Color represents different type of handedness, size \
+						of bubbles - total number of Home Runs. Also this graph \
+						is interactive. You can choose what information you \
+						would like to see. If you click on the rectangle of \
+						handedness in the legend then appropriate chart will be \
+						hidden. On this graph you can notice that the best \
+						batting players are both-handed or left-handed players.');
+
+				// By doing this we orphan the legend. This
+				// means it will not respond to graph updates.  Without this 
+				// the legend will redraw when the chart refreshes removing
+				// the unchecked item and also dropping the events we define
+				// below.
+				chart.legends = [];
+
+				// Get a unique list of handedness values to use when filtering
+				var filterValues = dimple.getUniqueValues(data, 'handedness');
+				// Get all the rectangles from our now orphaned legend
+				myLegend.shapes.select('rect')
+					// Add a click event to each rectangle
+					.on('click', function (e) {
+						// This indicates whether the item is already visible 
+						// or not
+						var hide = false;
+						var newFilters = [];
+						// If the filters contain the clicked shape hide it
+						filterValues.forEach(function (f) {
+							if (f === e.aggField.slice(-1)[0]) {
+								hide = true;
+							} else {
+								newFilters.push(f);
+							}
+						});
+						// Hide the shape or show it
+						if (hide) {
+							d3.select(this).style('opacity', 0.2);
+						} else {
+							newFilters.push(e.aggField.slice(-1)[0]);
+							d3.select(this).style('opacity', 0.8);
+						}
+						// Update the filters
+						filterValues = newFilters;
+						// Filter the data
+						chart.data = dimple.filterData(data, 'handedness', 
+							filterValues);
+						// Update graph
+						chart.draw();
+				});
+			};
+		</script>
+	</head>
+	<body>
+		<script type='text/javascript'>
+		/*
+		Load the CSV file
+		and pass the contents of it to the draw function
+		*/
+			d3.csv('baseball_data.csv', draw);
+		</script>
+	</body>
+</html>

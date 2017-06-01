@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<script src="http://d3js.org/d3.v3.min.js"></script>
+		<script src="http://dimplejs.org/dist/dimple.v2.0.0.min.js"></script>
+		<style>
+			h2 {
+				text-align: center;
+			}
+		</style>
+		<script type="text/javascript">
+			function draw(data) {
+			/* Create a bubble and line plots to visualize 
+			the difference in the players performance
+			*/
+				"use strict";
+				var margin = 100,
+					width = 1300 - margin,
+					height = 700 - margin;
+
+				// Add title for graph
+				d3.select("body")
+					.append("h2")
+					.text("Differences among the performance of the baseball players by Height and Handedness");
+
+				// Create line and bubble plots
+				var svg = dimple.newSvg("body", width, height);
+				var chart = new dimple.chart(svg, data);
+				chart.defaultColors = [
+					new dimple.color("#99d8c9"),
+					new dimple.color("#a1d99b"),
+					new dimple.color("#2ca25f")]
+
+				var chart_x = chart.addCategoryAxis("x", ["height", "handedness"]);
+				chart_x.title = "Height of a player (inches)";
+
+				var chart_y = chart.addMeasureAxis("y", "avg");
+				chart_y.title = "Batting average of a player";
+				chart_y.showGridlines = false;
+
+				var bubble = chart.addSeries("handedness",  dimple.plot.bubble);
+				bubble.aggregate = dimple.aggregateMethod.avg;
+				bubble.addOrderRule(['R','L','B'], false);
+
+				var line = chart.addSeries("handedness",  dimple.plot.line);
+				line.aggregate = dimple.aggregateMethod.avg;
+				line.addOrderRule(['R','L','B'], false);
+				line.lineWeight = 1;
+
+				// Add a legend to graph
+				chart.addLegend(115, 250, 1100, 20, "right");
+
+				// Draw graph
+				chart.draw();
+			};
+		</script>
+	</head>
+	<body>
+		<script type="text/javascript">
+		/*
+		Load the CSV file
+		and pass the contents of it to the draw function
+		*/
+			d3.csv("baseball_data.csv", draw);
+		</script>
+	</body>
+</html>
